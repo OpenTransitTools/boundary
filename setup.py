@@ -21,7 +21,7 @@ extras_require = dict(
 )
 
 setup(
-    name='pelias.adapter',
+    name='ott.boundary',
     version='0.1.0',
     description='Open Transit Tools - Web API / Controller',
     long_description=README + '\n\n' + CHANGES,
@@ -47,9 +47,9 @@ setup(
     install_requires=requires,
     extras_require=extras_require,
     tests_require=requires,
-    test_suite="pelias.adapter.tests",
+    test_suite="ott.boundary.tests",
     entry_points="""\
         [paste.app_factory]
-        main = pelias.adapter.pyramid.app:main
+        main = ott.boundary.pyramid.app:main
     """,
 )
