@@ -25,7 +25,11 @@ def do_view_config(cfg):
 
 @view_config(route_name='is_within_txt', renderer='string', http_cache=cache_long)
 def is_within_txt(request):
-    return CONFIG.get('is_within')
+    query = session.query(Lake).filter(Lake.geom.ST_Contains('POINT(4 1)'))
+    for lake in query:
+        print lake.name
+
+    return CONFIG.get('db_layers')
 
 
 @view_config(route_name='is_within', renderer='json', http_cache=cache_long)
