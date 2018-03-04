@@ -19,10 +19,14 @@ class Base(object):
     session = None # assumed to get set (as an @property) by way of Base in gtfsdb project
 
     def intersect(self, point):
-        return geo_db_utils.does_point_intersect_geom(self.session, point, self.geom)
+        ret_val = geo_db_utils.does_point_intersect_geom(self.session, point, self.geom)
+        log.debug('does point {} intersect geom {} == {}'.format(point, self.name, ret_val))
+        return ret_val
 
     def distance(self, point):
-        return geo_db_utils.point_to_geom_distance(self.session, point, self.geom)
+        ret_val = geo_db_utils.point_to_geom_distance(self.session, point, self.geom)
+        log.debug('distance of point {} from geom {} == {}'.format(point, self.name, ret_val))
+        return ret_val
 
     @classmethod
     def load(cls, db, **kwargs):

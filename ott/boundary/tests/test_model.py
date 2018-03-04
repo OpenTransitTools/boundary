@@ -55,9 +55,9 @@ def test_boundaries():
     from ott.utils import db_utils
     from ott.utils import geo_utils
 
-    point_in_both  = geo_utils.make_point_srid(lat=45.5, lon=-122.5)
-    point_district = geo_utils.make_point_srid(lat=45.5, lon=-122.5)
-    point_far_away = geo_utils.make_point_srid(lat=45.5, lon=-122.5)
+    point_in_both  = geo_utils.make_point(lat=45.51, lon=-122.68)
+    point_district = geo_utils.make_point(lat=45.51, lon=-122.67)
+    point_far_away = geo_utils.make_point(lat=45.5,  lon=-122.5)
 
     # with db connection, get ADA and District boundaries
     db = db_utils.db_args_gtfsdb()
@@ -66,15 +66,21 @@ def test_boundaries():
 
     print ada.intersect(point_in_both)
     print district.intersect(point_in_both)
+    print
+
     print ada.intersect(point_district)
     print district.intersect(point_district)
     print district.intersect(point_far_away)
+    print
 
     print ada.distance(point_in_both)
     print district.distance(point_in_both)
+    print
+    print ada.distance(point_district)
     print ada.distance(point_far_away)
     print district.distance(point_far_away)
-
+    print
+    print ada.intersect(point_in_both)
 
 def main(argv):
     test_boundaries()
