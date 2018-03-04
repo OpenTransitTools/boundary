@@ -7,13 +7,14 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'ott.utils',
-    'gtfsdb',
+    'gtfsdb[postgresql]',
 
     'pyramid < 1.8',
     'pyramid_tm',
     'pyramid_exclog',
     'waitress',
 ]
+
 dev_extras = []
 
 extras_require = dict(
