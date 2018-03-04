@@ -54,7 +54,6 @@ def test_boundaries():
     """
     from ott.utils import db_utils
     from ott.boundary.model import util_geo
-
     point_in_both  = util_geo.make_point_srid(lat=45.5, lon=-122.5)
     point_district = util_geo.make_point_srid(lat=45.5, lon=-122.5)
     point_far_away = util_geo.make_point_srid(lat=45.5, lon=-122.5)
@@ -65,6 +64,7 @@ def test_boundaries():
     ada = db.session.query(Ada).first()
     district = db.session.query(District)
 
+    print ada
     print ada.intersect(point_far_away)
     print ada.distance(point_far_away)
 
