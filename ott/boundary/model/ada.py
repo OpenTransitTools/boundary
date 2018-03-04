@@ -6,8 +6,9 @@ from sqlalchemy.orm import deferred, relationship
 from sqlalchemy.sql.functions import func
 
 from gtfsdb import config
-from gtfsdb.model.base import Base
 from gtfsdb.model.route import Route
+
+from ott.boundary.model.base import Base
 
 import logging
 log = logging.getLogger(__file__)
@@ -35,14 +36,6 @@ class Ada(Base):
     def __init__(self, name):
         self.name = name
         self.start_date = self.end_date = datetime.datetime.now()
-
-    def intersect(self, point):
-        from ott.boundary.model.util_geo import does_point_intersect_geom
-        return does_point_intersect_geom(point, self.geom)
-
-    def distance(self, point):
-        from ott.boundary.model.util_geo import does_point_intersect_geom
-        return point_to_geom_distance(point, self.geom)
 
     @classmethod
     def load(cls, db, **kwargs):
