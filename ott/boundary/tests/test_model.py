@@ -53,10 +53,10 @@ def test_boundaries():
     run by main, will test boundary intersection in established Geo database, with existing populated boundary tables
     """
     from ott.utils import db_utils
-    from ott.boundary.model import util_geo
-    point_in_both  = util_geo.make_point_srid(lat=45.5, lon=-122.5)
-    point_district = util_geo.make_point_srid(lat=45.5, lon=-122.5)
-    point_far_away = util_geo.make_point_srid(lat=45.5, lon=-122.5)
+    from ott.utils import geo_utils
+    point_in_both  = geo_utils.make_point_srid(lat=45.5, lon=-122.5)
+    point_district = geo_utils.make_point_srid(lat=45.5, lon=-122.5)
+    point_far_away = geo_utils.make_point_srid(lat=45.5, lon=-122.5)
 
 
     # bin/python
