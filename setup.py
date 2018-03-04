@@ -14,11 +14,10 @@ requires = [
     'pyramid_exclog',
     'waitress',
 ]
+dev_extras = []
 
 extras_require = dict(
-    dev=[
-      '' if os.name == 'nt' or os.name == 'posix' else 'linesman'
-    ],
+    dev=dev_extras,
 )
 
 setup(
@@ -37,7 +36,7 @@ setup(
 
     dependency_links = [
         'git+https://github.com/OpenTransitTools/utils.git#egg=ott.utils-0.1.0',
-        'git+https://github.com/OpenTransitTools/gtfsdb.git#egg=gtfsdb-0.1.0',
+        'git+https://github.com/OpenTransitTools/gtfsdb.git#egg=gtfsdb-0.1.7',
     ],
 
     license="Mozilla-derived (http://opentransittools.com)",
