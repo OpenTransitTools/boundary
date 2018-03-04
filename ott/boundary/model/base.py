@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Sequence
+from sqlalchemy.orm.session import Session
 from sqlalchemy.types import Date, Integer, String
 from sqlalchemy.orm import deferred, relationship
 from geoalchemy2 import Geometry
@@ -15,12 +16,13 @@ class Base(object):
     name = Column(String(255), nullable=False)
     start_date = Column(Date, index=True, nullable=False)
     end_date = Column(Date, index=True, nullable=False)
+    session = None # assumed to get set (as an @property) by way of Base in gtfsdb project
 
     def intersect(self, point):
-        return geo_db_utils.does_point_intersect_geom(point, self.geom)
+        return geo_db_utils.does_point_intersect_geom(self.session, point, self.geom)
 
     def distance(self, point):
-        return geo_db_utils.point_to_geom_distance(point, self.geom)
+        return geo_db_utils.point_to_geom_distance(self.session, point, self.geom)
 
     @classmethod
     def load(cls, db, **kwargs):
