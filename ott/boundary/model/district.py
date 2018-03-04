@@ -36,11 +36,6 @@ class District(GtfsdbBase, Base):
         self.start_date = self.end_date = datetime.datetime.now()
 
     @classmethod
-    def load(cls, db, **kwargs):
-        if hasattr(cls, 'geom'):
-            log.debug('{0}.load (loaded later in post_process)'.format(cls.__name__))
-
-    @classmethod
     def post_process(cls, db, **kwargs):
         if hasattr(cls, 'geom') and kwargs.get('create_boundaries'):
             log.debug('{0}.post_process'.format(cls.__name__))

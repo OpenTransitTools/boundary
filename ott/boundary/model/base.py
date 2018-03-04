@@ -17,6 +17,11 @@ class Base(object):
         return geo_db_utils.point_to_geom_distance(point, self.geom)
 
     @classmethod
+    def load(cls, db, **kwargs):
+        if hasattr(cls, 'geom'):
+            log.debug('{0}.load (loaded later in post_process)'.format(cls.__name__))
+
+    @classmethod
     def add_geometry_column(cls):
         if not hasattr(cls, 'geom'):
             log.debug('{0}.add geom column'.format(cls.__name__))
