@@ -2,18 +2,19 @@ import datetime
 
 from sqlalchemy import Column, Sequence
 from sqlalchemy.types import Date, Integer, String
-from sqlalchemy.orm import deferred, relationship
 from sqlalchemy.sql.functions import func
 
 from gtfsdb import config
-from gtfsdb.model.base import Base
+from gtfsdb.model.base import Base as GtfsdbBase
 from gtfsdb.model.route import Route
+
+from ott.boundary.model.base import Base
 
 import logging
 log = logging.getLogger(__file__)
 
 
-class District(Base):
+class District(GtfsdbBase, Base):
     """
     Service District bounding geometry
     can be configured to load a service district shape
@@ -34,18 +35,28 @@ class District(Base):
         self.name = name
         self.start_date = self.end_date = datetime.datetime.now()
 
-    def intersect(self, point):
-        from gtfsdb.util_geo import does_point_intersect_geom
-        return does_point_intersect_geom(point, self.geom)
-
-    def distance(self, point):
-        from gtfsdb.util_geo import point_to_geom_distance
-        return point_to_geom_distance(point, self.geom)
-
     @classmethod
     def load(cls, db, **kwargs):
         if hasattr(cls, 'geom'):
             log.debug('{0}.load (loaded later in post_process)'.format(cls.__name__))
+
+    @classmethod
+    def post_process(cls, db, **kwargs):
+        if hasattr(cls, 'geom') and kwargs.get('create_boundaries'):
+            log.debug('{0}.post_process'.format(cls.__name__))
+            district = cls(name='District Boundary')
+
+            # make / grab the geometry
+            geom = None
+            if True: # config.district_boundary_shp_file:
+                geom = cls.shp_file_boundary()
+            if geom is None:
+                geom = cls.calculated_boundary(db)
+            district.geom = geom
+
+            db.session.add(district)
+            db.session.commit()
+            db.session.close()
 
     @classmethod
     def calculated_boundary(cls, db):
@@ -76,27 +87,3 @@ class District(Base):
             log.warn('was not able to grab a district boundary from a .shp file')
         return ret_val
 
-    @classmethod
-    def post_process(cls, db, **kwargs):
-        if hasattr(cls, 'geom') and kwargs.get('create_boundaries'):
-            log.debug('{0}.post_process'.format(cls.__name__))
-            district = cls(name='District Boundary')
-
-            # make / grab the geometry
-            geom = None
-            if True: # config.district_boundary_shp_file:
-                geom = cls.shp_file_boundary()
-            if geom is None:
-                geom = cls.calculated_boundary(db)
-            district.geom = geom
-
-            db.session.add(district)
-            db.session.commit()
-            db.session.close()
-
-    @classmethod
-    def add_geometry_column(cls):
-        if not hasattr(cls, 'geom'):
-            from geoalchemy2 import Geometry
-            log.debug('{0}.add geom column'.format(cls.__name__))
-            cls.geom = deferred(Column(Geometry('POLYGON')))

@@ -6,6 +6,7 @@ from sqlalchemy.orm import deferred, relationship
 from sqlalchemy.sql.functions import func
 
 from gtfsdb import config
+from gtfsdb.model.base import Base as GtfsdbBase
 from gtfsdb.model.route import Route
 
 from ott.boundary.model.base import Base
@@ -14,7 +15,7 @@ import logging
 log = logging.getLogger(__file__)
 
 
-class Ada(Base):
+class Ada(GtfsdbBase, Base):
     """
     The Americans with Disabilities Act (https://www.ada.gov) requires transit agencies to provide
     complementary paratransit service to destinations within 3/4 mile of all fixed routes.
@@ -62,10 +63,3 @@ class Ada(Base):
             db.session.add(ada)
             db.session.commit()
             db.session.close()
-
-    @classmethod
-    def add_geometry_column(cls):
-        if not hasattr(cls, 'geom'):
-            from geoalchemy2 import Geometry
-            log.debug('{0}.add geom column'.format(cls.__name__))
-            cls.geom = deferred(Column(Geometry('POLYGON')))
