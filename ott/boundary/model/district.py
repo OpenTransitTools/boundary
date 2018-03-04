@@ -26,11 +26,6 @@ class District(GtfsdbBase, Base):
 
     __tablename__ = 'district'
 
-    id = Column(Integer, Sequence(None, optional=True), primary_key=True, nullable=True)
-    name = Column(String(255), nullable=False)
-    start_date = Column(Date, index=True, nullable=False)
-    end_date = Column(Date, index=True, nullable=False)
-
     def __init__(self, name):
         self.name = name
         self.start_date = self.end_date = datetime.datetime.now()

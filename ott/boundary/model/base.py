@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Sequence
+from sqlalchemy.types import Date, Integer, String
 from sqlalchemy.orm import deferred, relationship
 from geoalchemy2 import Geometry
 
@@ -9,6 +10,11 @@ log = logging.getLogger(__file__)
 
 
 class Base(object):
+
+    id = Column(Integer, Sequence(None, optional=True), primary_key=True, nullable=True)
+    name = Column(String(255), nullable=False)
+    start_date = Column(Date, index=True, nullable=False)
+    end_date = Column(Date, index=True, nullable=False)
 
     def intersect(self, point):
         return geo_db_utils.does_point_intersect_geom(point, self.geom)
