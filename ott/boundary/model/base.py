@@ -5,6 +5,8 @@ from sqlalchemy.orm import deferred, relationship
 from geoalchemy2 import Geometry
 
 from ott.utils import geo_db_utils
+from ott.utils import num_utils
+
 
 import logging
 log = logging.getLogger(__file__)
@@ -23,8 +25,15 @@ class Base(object):
         log.debug('does point {} intersect geom {} == {}'.format(point, self.name, ret_val))
         return ret_val
 
-    def distance(self, point):
-        ret_val = geo_db_utils.point_to_geom_distance(self.session, point, self.geom)
+    def distance(self, point, units='feet+inches'):
+        degrees = geo_db_utils.point_to_geom_distance(self.session, point, self.geom)
+        ret_val = degrees
+        if units != 'degrees':
+            if units == 'meters':
+                ret_val = num_utils.degrees_to_meters(degrees)
+            else:
+                ret_val = num_utils.degrees_to_feet(degrees)
+
         log.debug('distance of point {} from geom {} == {}'.format(point, self.name, ret_val))
         return ret_val
 

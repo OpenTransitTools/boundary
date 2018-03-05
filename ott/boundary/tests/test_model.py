@@ -54,6 +54,8 @@ def test_boundaries():
     """
     from ott.utils import db_utils
     from ott.utils import geo_utils
+    from ott.utils import num_utils
+
 
     point_in_both  = geo_utils.make_point(lat=45.51, lon=-122.68)
     point_district = geo_utils.make_point(lat=45.51, lon=-122.67)
