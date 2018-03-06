@@ -48,6 +48,11 @@ class TestRouteDirection(unittest.TestCase, BasicModelTests):
     model = Ada
 
 
+db = db_utils.db_args_gtfsdb()
+ada = db.session.query(Ada).first()
+district = db.session.query(District).first()
+
+
 def test_boundaries():
     """
     run by main, will test boundary intersection in established Geo database, with existing populated boundary tables

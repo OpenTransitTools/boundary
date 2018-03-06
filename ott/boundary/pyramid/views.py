@@ -2,10 +2,11 @@ from pyramid.response import Response
 from pyramid.view import view_config
 
 from ott.utils.parse import GeoParamParser
-
 from ott.utils.dao import base
 from ott.utils import json_utils
 from ott.utils import object_utils
+from ott.utils import db_utils
+from ott.utils import geo_utils
 
 from .app import CONFIG
 
@@ -25,16 +26,30 @@ def do_view_config(cfg):
 
 @view_config(route_name='is_within_txt', renderer='string', http_cache=cache_long)
 def is_within_txt(request):
-    query = session.query(Lake).filter(Lake.geom.ST_Contains('POINT(4 1)'))
-    for lake in query:
-        print lake.name
+    res = []
 
-    return CONFIG.get('db_layers')
+    point_district = geo_utils.make_point(lat=45.51, lon=-122.67)
+    res = CONFIG.get('is_within')
+    """
+    db = get 
+    ada = db.session.query(Ada).first()
+    district = db.session.query(District).first()
+
+    r = ada.intersect(point_district)
+    res.append(r)
+
+    r = district.intersect(point_district)
+    res.append(r)
+
+    for r in res:
+        pass
+    """
+
+    return res
 
 
 @view_config(route_name='is_within', renderer='json', http_cache=cache_long)
 def is_within(request):
-    #GeoParamParser
     return CONFIG.get('is_within')
 
 
