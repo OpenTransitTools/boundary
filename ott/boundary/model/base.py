@@ -53,5 +53,5 @@ class Base(object):
         import shapefile
         shp = open(base_file_path + ".shp", "rb")
         dbf = open(base_file_path + ".dbf", "rb")
-        r = shapefile.Reader(shp=myshp, dbf=mydbf)
+        r = shapefile.Reader(shp=shp, dbf=dbf)
         return r

@@ -13,6 +13,8 @@ from gtfsdb.api import database_load
 from ott.boundary.model.ada import Ada
 from ott.boundary.model.district import District
 
+from ott.utils import file_utils
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -46,6 +48,13 @@ class BasicModelTests(object):
 
 class TestRouteDirection(unittest.TestCase, BasicModelTests):
     model = Ada
+
+
+def test_shp_file(file_name="tm_boundary"):
+    dir = file_utils.get_file_dir(__file__)
+    file_path = os.path.join(dir, 'data', file_name)
+    shp = District.read_shp(file_path)
+    print shp
 
 
 def test_boundaries():
@@ -83,8 +92,10 @@ def test_boundaries():
     print
     print ada.intersect(point_in_both)
 
+
 def main(argv):
-    test_boundaries()
+    #test_boundaries()
+    test_shp_file()
 
 
 if __name__ == "__main__":
