@@ -1,7 +1,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from ott.utils.parse.geo_param_parser import GeoParamParser
+from ott.utils.parse.geo_param_parser import SimpleGeoParamParser
 from ott.utils.dao import base
 from ott.utils import json_utils
 from ott.utils import object_utils
@@ -28,7 +28,7 @@ def do_view_config(cfg):
 def is_within_txt(request):
     res = "null response"
 
-    params = GeoParamParser(request)
+    params = SimpleGeoParamParser(request)
     if not params.has_coords():
         res = "don't have coordinates (lat,lon or x,y) specified"
     else:
