@@ -47,3 +47,11 @@ class Base(object):
         if not hasattr(cls, 'geom'):
             log.debug('{0}.add geom column'.format(cls.__name__))
             cls.geom = deferred(Column(Geometry('POLYGON')))
+
+    @classmethod
+    def read_shp(cls, base_file_path):
+        import shapefile
+        shp = open(base_file_path + ".shp", "rb")
+        dbf = open(base_file_path + ".dbf", "rb")
+        r = shapefile.Reader(shp=myshp, dbf=mydbf)
+        return r

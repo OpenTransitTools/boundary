@@ -9,6 +9,8 @@ requires = [
     'ott.utils',
     'gtfsdb[postgresql]',
 
+    'pyshp',
+
     'pyramid < 1.8',
     'pyramid_tm',
     'pyramid_exclog',
