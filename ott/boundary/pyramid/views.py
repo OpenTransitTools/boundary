@@ -1,7 +1,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from ott.utils.parse import GeoParamParser
+from ott.utils.parse.geo_param_parser import GeoParamParser
 from ott.utils.dao import base
 from ott.utils import json_utils
 from ott.utils import object_utils
@@ -26,24 +26,30 @@ def do_view_config(cfg):
 
 @view_config(route_name='is_within_txt', renderer='string', http_cache=cache_long)
 def is_within_txt(request):
-    res = []
+    res = "null response"
 
-    point_district = geo_utils.make_point(lat=45.51, lon=-122.67)
-    res = CONFIG.get('is_within')
-    """
-    db = get 
-    ada = db.session.query(Ada).first()
-    district = db.session.query(District).first()
+    params = GeoParamParser(request)
+    if not params.has_coords():
+        res = "don't have coordinates (lat,lon or x,y) specified"
+    else:
+        res = "hey hey, we have coords"
 
-    r = ada.intersect(point_district)
-    res.append(r)
-
-    r = district.intersect(point_district)
-    res.append(r)
-
-    for r in res:
-        pass
-    """
+        #res = CONFIG.get('is_within')
+        """
+        db = get 
+        ada = db.session.query(Ada).first()
+        district = db.session.query(District).first()
+    
+        res = []
+        r = ada.intersect(point_district)
+        res.append(r)
+    
+        r = district.intersect(point_district)
+        res.append(r)
+    
+        for r in res:
+            pass
+        """
 
     return res
 
