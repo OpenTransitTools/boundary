@@ -14,6 +14,7 @@ from ott.boundary.model.ada import Ada
 from ott.boundary.model.district import District
 
 from ott.utils import file_utils
+from ott.utils import geo_utils
 
 import logging
 log = logging.getLogger(__name__)
@@ -54,7 +55,10 @@ def test_shp_file(file_name="tm_boundary"):
     dir = file_utils.get_file_dir(__file__)
     file_path = os.path.join(dir, 'data', file_name)
     shp = District.read_shp(file_path)
-    print shp
+    geo = shp.shapes()
+    print shp, 'len =', len(geo)
+    pt = geo[0].points[0]
+    print geo_utils.to_lon_lat_tuple(pt)
 
 
 def test_boundaries():
