@@ -52,8 +52,10 @@ setup(
     extras_require=extras_require,
     tests_require=requires,
     test_suite="ott.boundary.tests",
-    entry_points="""\
+    entry_points="""
         [paste.app_factory]
         main = ott.boundary.pyramid.app:main
+        [console_scripts]
+        load_db = ott.boundary.control.loader:load_db
     """,
 )
