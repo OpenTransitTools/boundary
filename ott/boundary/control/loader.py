@@ -23,7 +23,7 @@ def load_db():
     cmdline = db_cmdline.db_parser()
     args = cmdline.parse_args()
     print args
-    exit
+
     session = Database.make_session(args.database_url, args.schema, args.geo, args.create)
 
     url = 'http://trimet.org/transweb/ws/V1/FeedSpecAlerts/appId/3819A6A38C72223198B560DF0/includeFuture/true'
