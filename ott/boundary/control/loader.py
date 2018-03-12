@@ -8,7 +8,8 @@ log = logging.getLogger(__file__)
 def load_db():
     cmdline = db_cmdline.db_parser()
     args = cmdline.parse_args()
-    print Database.get_base_subclasses()
+    db = Database.factory_from_cmdline(args)
+
 
 
 def XXload_db():
