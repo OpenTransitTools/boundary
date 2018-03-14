@@ -18,7 +18,7 @@ class Base(object):
     name = Column(String(255), nullable=False)
     start_date = Column(Date, index=True, nullable=False)
     end_date = Column(Date, index=True, nullable=False)
-    session = None # assumed to get set (as an @property) by way of Base in gtfsdb project
+    session = None  # assumed to get set (as an @property) by way of Base in gtfsdb project
 
     def intersect(self, point):
         ret_val = geo_db_utils.does_point_intersect_geom(self.session, point, self.geom)

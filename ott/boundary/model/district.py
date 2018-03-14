@@ -6,7 +6,6 @@ from sqlalchemy.sql.functions import func
 
 from gtfsdb import config
 from gtfsdb.model.base import Base as GtfsdbBase
-from gtfsdb.model.route import Route
 
 from ott.boundary.model.base import Base
 
@@ -32,13 +31,13 @@ class District(GtfsdbBase, Base):
 
     @classmethod
     def post_process(cls, db, **kwargs):
-        if hasattr(cls, 'geom') and kwargs.get('create_boundaries'):
+        if hasattr(cls, 'geom'):
             log.debug('{0}.post_process'.format(cls.__name__))
             district = cls(name='District Boundary')
 
             # make / grab the geometry
             geom = None
-            if True: # config.district_boundary_shp_file:
+            if True:  # config.district_boundary_shp_file:
                 geom = cls.shp_file_boundary()
             if geom is None:
                 geom = cls.calculated_boundary(db)
@@ -57,7 +56,8 @@ class District(GtfsdbBase, Base):
         # NOTE ST_ExteriorRing won't work with MULTIPOLYGONS
         # https://postgis.net/docs/ST_Buffer.html
         """
-        from gtfsdb import util_geo
+        from gtfsdb.model.route import Route
+        db.prep_an_orm_class(Route)
 
         log.info('calculating the service district boundary from an abitrary buffer / extent on routes')
         geom = db.session.query(

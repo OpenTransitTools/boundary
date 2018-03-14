@@ -7,8 +7,6 @@ from sqlalchemy.sql.functions import func
 
 from gtfsdb import config
 from gtfsdb.model.base import Base as GtfsdbBase
-from gtfsdb.model.route import Route
-
 from ott.boundary.model.base import Base
 
 import logging
@@ -28,6 +26,7 @@ class Ada(GtfsdbBase, Base):
     datasource = config.DATASOURCE_DERIVED
 
     __tablename__ = 'ada'
+    filename = "X"
 
     def __init__(self, name):
         self.name = name
@@ -35,7 +34,10 @@ class Ada(GtfsdbBase, Base):
 
     @classmethod
     def post_process(cls, db, **kwargs):
-        if hasattr(cls, 'geom') and kwargs.get('create_boundaries'):
+        if hasattr(cls, 'geom'):
+            from gtfsdb.model.route import Route
+            db.prep_an_orm_class(Route)
+
             log.debug('{0}.post_process'.format(cls.__name__))
             ada = cls(name='ADA Boundary')
 
