@@ -4,6 +4,7 @@ from sqlalchemy.types import Date, Integer, String
 from sqlalchemy.orm import deferred, relationship
 from geoalchemy2 import Geometry
 
+from ott.utils import geo_utils
 from ott.utils import geo_db_utils
 from ott.utils import num_utils
 
@@ -49,9 +50,7 @@ class Base(object):
             cls.geom = deferred(Column(Geometry('POLYGON')))
 
     @classmethod
-    def read_shp(cls, base_file_path):
-        import shapefile
-        shp = open(base_file_path + ".shp", "rb")
-        dbf = open(base_file_path + ".dbf", "rb")
-        r = shapefile.Reader(shp=shp, dbf=dbf)
+    def read_shp(cls, shp_dir_path):
+        r = geo_utils.read_shp(shp_dir_path)
         return r
+
