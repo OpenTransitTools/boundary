@@ -78,13 +78,13 @@ def test_boundaries():
     ada = db.session.query(Ada).first()
     district = db.session.query(District).first()
 
-    print ada.intersect(point_in_both)
-    print district.intersect(point_in_both)
+    print ada.is_within(point_in_both)
+    print district.is_within(point_in_both)
     print
 
-    print ada.intersect(point_district)
-    print district.intersect(point_district)
-    print district.intersect(point_far_away)
+    print ada.is_within(point_district)
+    print district.is_within(point_district)
+    print district.is_within(point_far_away)
     print
 
     print ada.distance(point_in_both)
@@ -94,7 +94,7 @@ def test_boundaries():
     print ada.distance(point_far_away)
     print district.distance(point_far_away)
     print
-    print ada.intersect(point_in_both)
+    print ada.is_within(point_in_both)
 
 
 def main(argv):
