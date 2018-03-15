@@ -1,12 +1,15 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from ott.utils.parse.geo_param_parser import SimpleGeoParamParser
+from ott.utils.parse.url.geo_param_parser import SimpleGeoParamParser
 from ott.utils.dao import base
 from ott.utils import json_utils
 from ott.utils import object_utils
 from ott.utils import db_utils
 from ott.utils import geo_utils
+
+from ott.boundary.model.ada import Ada
+from ott.boundary.model.district import District
 
 from .app import CONFIG
 
@@ -16,6 +19,11 @@ log = logging.getLogger(__file__)
 
 cache_long = 500
 system_err_msg = base.ServerError()
+
+
+db_url = CONFIG.get('db_url')
+schema = CONFIG.get('schema')
+DB = db_utils.gtfsdb_conn_parts(db_url, schema, is_geospatial=True)
 
 
 def do_view_config(cfg):
@@ -32,24 +40,12 @@ def is_within_txt(request):
     if not params.has_coords():
         res = "don't have coordinates (lat,lon or x,y) specified"
     else:
-        res = "hey hey, we have coords"
-
-        #res = CONFIG.get('is_within')
-        """
-        db = get 
-        ada = db.session.query(Ada).first()
-        district = db.session.query(District).first()
-    
-        res = []
-        r = ada.intersect(point_district)
-        res.append(r)
-    
-        r = district.intersect(point_district)
-        res.append(r)
-    
-        for r in res:
-            pass
-        """
+        point = params.to_point()
+        ada = DB.session.query(Ada).first()
+        district = DB.session.query(District).first()
+        a = ada.distance(point)
+        d = district.distance(point)
+        res = "ada = {}\ndistrict = {}".format(a, d)
 
     return res
 
