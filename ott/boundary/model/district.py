@@ -63,7 +63,7 @@ class District(GtfsdbBase, Base):
         geom = db.session.query(
             func.ST_ExteriorRing(
                 func.ST_Union(
-                    Route.geom.ST_Buffer(0.0085, 'quad_segs=4 endcap=square join=mitre mitre_limit=1.0'))))
+                    Route.geom.ST_Buffer(0.0313, 'quad_segs=4 endcap=square join=mitre mitre_limit=1.0'))))
         ret_val = func.ST_MakePolygon(geom)
         return ret_val
 

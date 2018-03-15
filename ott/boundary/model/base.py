@@ -19,7 +19,9 @@ class Base(object):
     name = Column(String(255), nullable=False)
     start_date = Column(Date, index=True, nullable=False)
     end_date = Column(Date, index=True, nullable=False)
+
     session = None  # assumed to get set (as an @property) by way of Base in gtfsdb project
+    geometry_type = 'POLYGON'
 
     def intersect(self, point):
         ret_val = geo_db_utils.does_point_intersect_geom(self.session, point, self.geom)
@@ -47,7 +49,7 @@ class Base(object):
     def add_geometry_column(cls):
         if not hasattr(cls, 'geom'):
             log.debug('{0}.add geom column'.format(cls.__name__))
-            cls.geom = deferred(Column(Geometry('POLYGON')))
+            cls.geom = deferred(Column(Geometry(cls.geometry_type)))
 
     @classmethod
     def read_shp(cls, shp_dir_path):

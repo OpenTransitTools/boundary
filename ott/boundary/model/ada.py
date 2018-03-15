@@ -26,7 +26,8 @@ class Ada(GtfsdbBase, Base):
     datasource = config.DATASOURCE_DERIVED
 
     __tablename__ = 'ada'
-    filename = "X"
+
+    #geometry_type = 'MULTIPOLYGON'
 
     def __init__(self, name):
         self.name = name
@@ -45,10 +46,17 @@ class Ada(GtfsdbBase, Base):
             # is be generated for the ada boundary
             # todo: make this value configurable ... and maybe metric ...
             # todo: the following doesn't work ... too big of a buffer ... so
-            # geom = db.session.query(func.ST_Union(Route.geom.ST_Buffer(3960, 'quad_segs=50')))
 
-            # the buffer values here are just guesses at this point ...
-            geom = db.session.query(func.ST_Union(Route.geom.ST_Buffer(0.0035)))
+            # the buffer values of 0.0036 is not scientifically determined ... rather it looks good on a limited case
+            geom = db.session.query(
+                func.ST_ExteriorRing(
+                    func.ST_Union(
+                        Route.geom.ST_Buffer(0.011025, 'quad_segs=50')
+                    )
+                )
+            )
+            geom = func.ST_MakePolygon(geom)
+
             # TODO: clip the ADA geom against the District geom ... no ADA outside legal transit district
             ada.geom = geom
 
