@@ -5,6 +5,7 @@ from ott.utils.parse.url.geo_param_parser import SimpleGeoParamParser
 from ott.utils.dao import base
 from ott.utils import json_utils
 from ott.utils import object_utils
+from ott.utils.object_utils import SimpleObject
 from ott.utils import db_utils
 from ott.utils import geo_utils
 
@@ -21,15 +22,37 @@ cache_long = 500
 system_err_msg = base.ServerError()
 
 
-import pdb; pdb.set_trace()
+#import pdb; pdb.set_trace()
 db_url = CONFIG.get('db_url')
 schema = CONFIG.get('schema')
 DB = db_utils.gtfsdb_conn_parts(db_url, schema, is_geospatial=True)
+
+ADA = None
+DISTRICT = None
+
+
+def get_boundaries():
+    try:
+        global ADA
+        global DISTRICT
+
+        if ADA is None:  # or ADA.connection_fails():
+            ADA = DB.session.query(Ada).first()
+        if DISTRICT is None:
+            DISTRICT = DB.session.query(District).first()
+    except Exceptions as e:
+        log.warn(e)
+
+    ret_val = SimpleObject()
+    ret_val.ada = ADA
+    ret_val.district = DISTRICT
+    return ret_val
 
 
 def do_view_config(cfg):
     cfg.add_route('is_within', '/is_within')
     cfg.add_route('is_within_txt', '/is_within_txt')
+    cfg.add_route('distance_txt', '/distance_txt')
     cfg.add_route('multi_points_within', '/multi_points_within')
 
 
@@ -42,11 +65,30 @@ def is_within_txt(request):
         res = "don't have coordinates (lat,lon or x,y) specified"
     else:
         point = params.to_point()
-        ada = DB.session.query(Ada).first()
-        district = DB.session.query(District).first()
-        a = ada.distance(point)
-        d = district.distance(point)
-        res = "ada = {}\ndistrict = {}".format(a, d)
+        b = get_boundaries()
+        a = b.ada.is_within(point)
+        d = b.district.is_within(point)
+        res = "{}:\n\n {} within the ADA boundary.\n -and-\n {} within the DISTRICT boundary.".format(point,
+                    "is" if a else "isn't",
+                    "is" if d else "isn't"
+        )
+
+    return res
+
+
+@view_config(route_name='distance_txt', renderer='string', http_cache=cache_long)
+def distance_txt(request):
+    res = "null response"
+
+    params = SimpleGeoParamParser(request)
+    if not params.has_coords():
+        res = "don't have coordinates (lat,lon or x,y) specified"
+    else:
+        point = params.to_point()
+        b = get_boundaries()
+        a = b.ada.distance(point)
+        d = b.district.distance(point)
+        res = "{} is:\n\n {}' away from the ADA boundary.\n -and-\n {}' away from the DISTRICT boundary.".format(point, a, d)
 
     return res
 

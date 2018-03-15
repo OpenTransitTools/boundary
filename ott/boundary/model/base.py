@@ -23,7 +23,7 @@ class Base(object):
     session = None  # assumed to get set (as an @property) by way of Base in gtfsdb project
     geometry_type = 'POLYGON'
 
-    def intersect(self, point):
+    def is_within(self, point):
         ret_val = geo_db_utils.does_point_intersect_geom(self.session, point, self.geom)
         log.debug('does point {} intersect geom {} == {}'.format(point, self.name, ret_val))
         return ret_val
