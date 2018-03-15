@@ -21,6 +21,7 @@ cache_long = 500
 system_err_msg = base.ServerError()
 
 
+import pdb; pdb.set_trace()
 db_url = CONFIG.get('db_url')
 schema = CONFIG.get('schema')
 DB = db_utils.gtfsdb_conn_parts(db_url, schema, is_geospatial=True)
