@@ -31,6 +31,13 @@ ADA = None
 DISTRICT = None
 
 
+def do_view_config(cfg):
+    cfg.add_route('is_within', '/is_within')
+    cfg.add_route('is_within_txt', '/is_within_txt')
+    cfg.add_route('distance_txt', '/distance_txt')
+    cfg.add_route('multi_points_within', '/multi_points_within')
+
+
 def get_boundaries():
     try:
         global ADA
@@ -40,20 +47,13 @@ def get_boundaries():
             ADA = DB.session.query(Ada).first()
         if DISTRICT is None:
             DISTRICT = DB.session.query(District).first()
-    except Exceptions as e:
+    except Exception as e:
         log.warn(e)
 
     ret_val = SimpleObject()
     ret_val.ada = ADA
     ret_val.district = DISTRICT
     return ret_val
-
-
-def do_view_config(cfg):
-    cfg.add_route('is_within', '/is_within')
-    cfg.add_route('is_within_txt', '/is_within_txt')
-    cfg.add_route('distance_txt', '/distance_txt')
-    cfg.add_route('multi_points_within', '/multi_points_within')
 
 
 @view_config(route_name='is_within_txt', renderer='string', http_cache=cache_long)
@@ -66,12 +66,13 @@ def is_within_txt(request):
     else:
         point = params.to_point()
         b = get_boundaries()
-        a = b.ada.is_within(point)
-        d = b.district.is_within(point)
-        res = "{}:\n\n {} within the ADA boundary.\n -and-\n {} within the DISTRICT boundary.".format(point,
-                    "is" if a else "isn't",
-                    "is" if d else "isn't"
-        )
+        if b.ada and b.district:
+            a = b.ada.is_within(point)
+            d = b.district.is_within(point)
+            res = "{}:\n\n {} within the ADA boundary.\n -and-\n {} within the DISTRICT boundary.".format(point,
+                        "is" if a else "isn't",
+                        "is" if d else "isn't"
+            )
 
     return res
 
@@ -86,9 +87,10 @@ def distance_txt(request):
     else:
         point = params.to_point()
         b = get_boundaries()
-        a = b.ada.distance(point)
-        d = b.district.distance(point)
-        res = "{} is:\n\n {}' away from the ADA boundary.\n -and-\n {}' away from the DISTRICT boundary.".format(point, a, d)
+        if b.ada and b.district:
+            a = b.ada.distance(point)
+            d = b.district.distance(point)
+            res = "{} is:\n\n {}' away from the ADA boundary.\n -and-\n {}' away from the DISTRICT boundary.".format(point, a, d)
 
     return res
 
