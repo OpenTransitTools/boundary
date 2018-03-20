@@ -54,9 +54,7 @@ def get_boundaries():
     return ret_val
 
 
-def get_within(point, boundary_names=['ada', 'district']):
-    import pdb; pdb.set_trace()
-
+def get_within_values(point, boundary_names=['ada', 'district']):
     ret_val = {}
     b = get_boundaries()
 
@@ -64,6 +62,21 @@ def get_within(point, boundary_names=['ada', 'district']):
         boundary = b.get(n)
         if boundary:
             v = boundary.is_within(point)
+            ret_val[n] = v
+        else:
+            ret_val[n] = None
+    return ret_val
+
+
+def get_distance_values(point, boundary_names=['ada', 'district']):
+    #import pdb; pdb.set_trace()
+    ret_val = {}
+    b = get_boundaries()
+
+    for n in boundary_names:
+        boundary = b.get(n)
+        if boundary:
+            v = boundary.distance(point)
             ret_val[n] = v
         else:
             ret_val[n] = None
@@ -79,7 +92,7 @@ def is_within_txt(request):
         res = "don't have coordinates (lat,lon or x,y) specified"
     else:
         point = params.to_point()
-        w = get_within(point)
+        w = get_within_values(point)
         res = "{}:\n\n {} within the ADA boundary.\n -and-\n {} within the DISTRICT boundary.".format(
               point,
               "is" if w['ada'] else "isn't",
@@ -98,22 +111,25 @@ def distance_txt(request):
         res = "don't have coordinates (lat,lon or x,y) specified"
     else:
         point = params.to_point()
-        b = get_boundaries()
-        if b.ada and b.district:
-            a = b.ada.distance(point)
-            d = b.district.distance(point)
-            res = "{} is:\n\n {}' away from the ADA boundary.\n -and-\n {}' away from the DISTRICT boundary.".format(point, a, d)
+        w = get_distance_values(point)
+        res = "{} is:\n\n {}' away from the ADA boundary.\n -and-\n {}' away from the DISTRICT boundary.".format(
+              point, w['ada'], w['district'])
 
     return res
 
 
 @view_config(route_name='is_within', renderer='json', http_cache=cache_long)
 def is_within(request):
-    return CONFIG.get('is_within')
+    params = SimpleGeoParamParser(request)
+    point = params.to_point()
+    w = get_within_values(point)
+    return w
 
 
 @view_config(route_name='multi_points_within', renderer='json', http_cache=cache_long)
 def multi_points_within(request):
-    url = CONFIG.get('x')
-    return url
+    params = SimpleGeoParamParser(request)
+    point = params.to_point()
+    w = get_distance_values(point)
+    return w
 
