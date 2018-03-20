@@ -22,7 +22,6 @@ cache_long = 500
 system_err_msg = base.ServerError()
 
 
-#import pdb; pdb.set_trace()
 db_url = CONFIG.get('db_url')
 schema = CONFIG.get('schema')
 DB = db_utils.gtfsdb_conn_parts(db_url, schema, is_geospatial=True)
@@ -49,20 +48,25 @@ def get_boundaries():
     except Exception as e:
         log.warn(e)
 
-    ret_val = SimpleObject()
-    ret_val.ada = ADA
-    ret_val.district = DISTRICT
+    ret_val = {}
+    ret_val['ada'] = ADA
+    ret_val['district'] = DISTRICT
     return ret_val
 
 
 def get_within(point, boundary_names=['ada', 'district']):
+    import pdb; pdb.set_trace()
+
     ret_val = {}
     b = get_boundaries()
 
     for n in boundary_names:
         boundary = b.get(n)
-        v = boundary.is_within(point)
-        ret_val[n] = v
+        if boundary:
+            v = boundary.is_within(point)
+            ret_val[n] = v
+        else:
+            ret_val[n] = None
     return ret_val
 
 
@@ -79,7 +83,7 @@ def is_within_txt(request):
         res = "{}:\n\n {} within the ADA boundary.\n -and-\n {} within the DISTRICT boundary.".format(
               point,
               "is" if w['ada'] else "isn't",
-              "is" if w['distance'] else "isn't"
+              "is" if w['district'] else "isn't"
         )
 
     return res
@@ -112,5 +116,4 @@ def is_within(request):
 def multi_points_within(request):
     url = CONFIG.get('x')
     return url
-
 
