@@ -27,9 +27,6 @@ db_url = CONFIG.get('db_url')
 schema = CONFIG.get('schema')
 DB = db_utils.gtfsdb_conn_parts(db_url, schema, is_geospatial=True)
 
-ADA = None
-DISTRICT = None
-
 
 def do_view_config(cfg):
     cfg.add_route('is_within', '/is_within')
@@ -38,6 +35,8 @@ def do_view_config(cfg):
     cfg.add_route('multi_points_within', '/multi_points_within')
 
 
+ADA = None
+DISTRICT = None
 def get_boundaries():
     try:
         global ADA
@@ -56,6 +55,17 @@ def get_boundaries():
     return ret_val
 
 
+def get_within(point, boundary_names=['ada', 'district']):
+    ret_val = {}
+    b = get_boundaries()
+
+    for n in boundary_names:
+        boundary = b.get(n)
+        v = boundary.is_within(point)
+        ret_val[n] = v
+    return ret_val
+
+
 @view_config(route_name='is_within_txt', renderer='string', http_cache=cache_long)
 def is_within_txt(request):
     res = "null response"
@@ -65,14 +75,12 @@ def is_within_txt(request):
         res = "don't have coordinates (lat,lon or x,y) specified"
     else:
         point = params.to_point()
-        b = get_boundaries()
-        if b.ada and b.district:
-            a = b.ada.is_within(point)
-            d = b.district.is_within(point)
-            res = "{}:\n\n {} within the ADA boundary.\n -and-\n {} within the DISTRICT boundary.".format(point,
-                        "is" if a else "isn't",
-                        "is" if d else "isn't"
-            )
+        w = get_within(point)
+        res = "{}:\n\n {} within the ADA boundary.\n -and-\n {} within the DISTRICT boundary.".format(
+              point,
+              "is" if w['ada'] else "isn't",
+              "is" if w['distance'] else "isn't"
+        )
 
     return res
 
