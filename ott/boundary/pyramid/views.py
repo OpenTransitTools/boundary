@@ -30,8 +30,8 @@ DB = db_utils.gtfsdb_conn_parts(db_url, schema, is_geospatial=True)
 def do_view_config(cfg):
     cfg.add_route('is_within', '/is_within')
     cfg.add_route('is_within_txt', '/is_within_txt')
+    cfg.add_route('distance', '/distance')
     cfg.add_route('distance_txt', '/distance_txt')
-    cfg.add_route('multi_points_within', '/multi_points_within')
 
 
 ADA = None
@@ -83,6 +83,14 @@ def get_distance_values(point, boundary_names=['ada', 'district']):
     return ret_val
 
 
+@view_config(route_name='is_within', renderer='json', http_cache=cache_long)
+def is_within(request):
+    params = SimpleGeoParamParser(request)
+    point = params.to_point()
+    w = get_within_values(point)
+    return w
+
+
 @view_config(route_name='is_within_txt', renderer='string', http_cache=cache_long)
 def is_within_txt(request):
     res = "null response"
@@ -102,6 +110,14 @@ def is_within_txt(request):
     return res
 
 
+@view_config(route_name='distance', renderer='json', http_cache=cache_long)
+def distance(request):
+    params = SimpleGeoParamParser(request)
+    point = params.to_point()
+    d = get_distance_values(point)
+    return d
+
+
 @view_config(route_name='distance_txt', renderer='string', http_cache=cache_long)
 def distance_txt(request):
     res = "null response"
@@ -116,20 +132,3 @@ def distance_txt(request):
               point, w['ada'], w['district'])
 
     return res
-
-
-@view_config(route_name='is_within', renderer='json', http_cache=cache_long)
-def is_within(request):
-    params = SimpleGeoParamParser(request)
-    point = params.to_point()
-    w = get_within_values(point)
-    return w
-
-
-@view_config(route_name='multi_points_within', renderer='json', http_cache=cache_long)
-def multi_points_within(request):
-    params = SimpleGeoParamParser(request)
-    point = params.to_point()
-    w = get_distance_values(point)
-    return w
-
