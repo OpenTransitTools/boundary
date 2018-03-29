@@ -13,21 +13,22 @@ log = logging.getLogger(__file__)
 cache_long = 500
 system_err_msg = base.ServerError()
 
-BOUNDARIES = None
-
 
 def do_view_config(cfg):
-    #import pdb; pdb.set_trace()
-    global BOUNDARIES
-    db_url = cfg.registry.settings.get('db_url')
-    schema = cfg.registry.settings.get('schema')
-    BOUNDARIES = Boundaries(db_url, schema)
-
+    make_boundaries_global(cfg)
     cfg.add_route('is_within', '/is_within')
     cfg.add_route('is_within_txt', '/is_within_txt')
     cfg.add_route('distance', '/distance')
     cfg.add_route('distance_txt', '/distance_txt')
 
+
+BOUNDARIES = None
+def make_boundaries_global(cfg):
+    #import pdb; pdb.set_trace()
+    global BOUNDARIES
+    db_url = cfg.registry.settings.get('db_url')
+    schema = cfg.registry.settings.get('schema')
+    BOUNDARIES = Boundaries(db_url, schema)
 
 @view_config(route_name='is_within', renderer='json', http_cache=cache_long)
 def is_within(request):
