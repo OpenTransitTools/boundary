@@ -12,7 +12,6 @@ from ott.utils import geo_utils
 from ott.boundary.model.ada import Ada
 from ott.boundary.model.district import District
 
-from .app import CONFIG
 
 import logging
 log = logging.getLogger(__file__)
@@ -22,12 +21,16 @@ cache_long = 500
 system_err_msg = base.ServerError()
 
 
-db_url = CONFIG.get('db_url')
-schema = CONFIG.get('schema')
-DB = db_utils.gtfsdb_conn_parts(db_url, schema, is_geospatial=True)
+DB = None
 
 
 def do_view_config(cfg):
+    #import pdb; pdb.set_trace()
+    global DB
+    db_url = cfg.registry.settings.get('db_url')
+    schema = cfg.registry.settings.get('schema')
+    DB = db_utils.gtfsdb_conn_parts(db_url, schema, is_geospatial=True)
+
     cfg.add_route('is_within', '/is_within')
     cfg.add_route('is_within_txt', '/is_within_txt')
     cfg.add_route('distance', '/distance')
@@ -69,7 +72,6 @@ def get_within_values(point, boundary_names=['ada', 'district']):
 
 
 def get_distance_values(point, boundary_names=['ada', 'district']):
-    #import pdb; pdb.set_trace()
     ret_val = {}
     b = get_boundaries()
 
