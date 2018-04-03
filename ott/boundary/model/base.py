@@ -28,6 +28,10 @@ class Base(object):
         log.debug('does point {} intersect geom {} == {}'.format(point, self.name, ret_val))
         return ret_val
 
+    def is_within_xy(self, x, y):
+        point = geo_utils.make_point(x, y)
+        return self.is_within(point)
+
     def distance(self, point, units='feet+inches'):
         degrees = geo_db_utils.point_to_geom_distance(self.session, point, self.geom)
         ret_val = degrees

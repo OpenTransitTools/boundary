@@ -29,6 +29,8 @@ def make_boundaries_global(cfg):
     db_url = cfg.registry.settings.get('db_url')
     schema = cfg.registry.settings.get('schema')
     BOUNDARIES = Boundaries(db_url, schema)
+    return BOUNDARIES
+
 
 @view_config(route_name='is_within', renderer='json', http_cache=cache_long)
 def is_within(request):
