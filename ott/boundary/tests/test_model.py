@@ -74,7 +74,7 @@ def test_boundaries():
     point_far_away = geo_utils.make_point(lat=45.5,  lon=-122.5)
 
     # with db connection, get ADA and District boundaries
-    db = db_utils.db_args_gtfsdb()
+    db = "#TODO ... was db_utils.db_args_gtfsdb()"
     ada = db.session.query(Ada).first()
     district = db.session.query(District).first()
 
