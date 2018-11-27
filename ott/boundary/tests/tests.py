@@ -30,7 +30,7 @@ class TestPeliasToSolr(unittest.TestCase):
                 num_stops += 1
                 self.assertTrue(len(d.stop_id) > 0)
                 self.assertTrue(len(d.agency_id) > 0)
-                # print d.stop_id
+                # print(d.stop_id)
         self.assertTrue(num_stops > 0)
 
     def test_unique_coords(self):

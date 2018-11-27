@@ -56,9 +56,9 @@ def test_shp_file(file_name="tm_boundary"):
     file_path = os.path.join(dir, 'data', file_name)
     shp = District.read_shp(file_path)
     geo = shp.shapes()
-    print shp, 'len =', len(geo)
+    print(shp, 'len =', len(geo))
     pt = geo[0].points[0]
-    print geo_utils.to_lon_lat_tuple(pt)
+    print(geo_utils.to_lon_lat_tuple(pt))
 
 
 def test_boundaries():
@@ -78,23 +78,23 @@ def test_boundaries():
     ada = db.session.query(Ada).first()
     district = db.session.query(District).first()
 
-    print ada.is_within(point_in_both)
-    print district.is_within(point_in_both)
-    print
+    print(ada.is_within(point_in_both))
+    print(district.is_within(point_in_both))
+    print()
 
-    print ada.is_within(point_district)
-    print district.is_within(point_district)
-    print district.is_within(point_far_away)
-    print
+    print(ada.is_within(point_district))
+    print(district.is_within(point_district))
+    print(district.is_within(point_far_away))
+    print()
 
-    print ada.distance(point_in_both)
-    print district.distance(point_in_both)
-    print
-    print ada.distance(point_district)
-    print ada.distance(point_far_away)
-    print district.distance(point_far_away)
-    print
-    print ada.is_within(point_in_both)
+    print(ada.distance(point_in_both))
+    print(district.distance(point_in_both))
+    print()
+    print(ada.distance(point_district))
+    print(ada.distance(point_far_away))
+    print(district.distance(point_far_away))
+    print()
+    print(ada.is_within(point_in_both))
 
 
 def main(argv):
