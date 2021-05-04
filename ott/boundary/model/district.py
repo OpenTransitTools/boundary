@@ -74,6 +74,6 @@ class District(GtfsdbBase, Base):
         """
         ret_val = None
         if ret_val is None:
-            log.warn('was not able to grab a district boundary from a .shp file')
+            log.warning('was not able to grab a district boundary from a .shp file')
         return ret_val
 

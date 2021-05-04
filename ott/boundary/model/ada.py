@@ -1,8 +1,5 @@
 import datetime
 
-from sqlalchemy import Column, Sequence
-from sqlalchemy.types import Date, Integer, String
-from sqlalchemy.orm import deferred, relationship
 from sqlalchemy.sql.functions import func
 
 from gtfsdb import config

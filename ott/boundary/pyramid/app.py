@@ -1,8 +1,6 @@
 from pyramid.config import Configurator
 from pyramid.events import NewRequest
 
-import ott.utils.object_utils as obj
-
 import logging
 log = logging.getLogger(__file__)
 

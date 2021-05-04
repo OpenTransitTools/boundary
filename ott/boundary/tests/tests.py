@@ -12,8 +12,8 @@ PORT="45454"
 class TestPeliasToSolr(unittest.TestCase):
     def setUp(self):
         self.base_path = file_utils.get_file_dir(__file__)
-        self.auto_url = "https://ws-st.trimet.org/pelias/v1/autocomplete"
-        self.search_url = "https://ws-st.trimet.org/pelias/v1/search"
+        self.auto_url = "https://ws.trimet.org/pelias/v1/autocomplete"
+        self.search_url = "https://ws.trimet.org/pelias/v1/search"
 
     def tearDown(self):
         pass
@@ -73,8 +73,8 @@ class TestPeliasToSolr(unittest.TestCase):
         """
         send an interpolated address to the query, and expect that
 
-        https://ws-st.trimet.org/pelias/v1/autocomplete?text=888%20SE%20Lambert%20St
-        https://ws-st.trimet.org/pelias/v1/search?text=888%20SE%20Lambert%20St
+        https://ws.trimet.org/pelias/v1/autocomplete?text=888%20SE%20Lambert%20St
+        https://ws.trimet.org/pelias/v1/search?text=888%20SE%20Lambert%20St
         """
         solr_params = {}
         solr_params['q'] = '888 SE Lambert St'

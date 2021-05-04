@@ -36,7 +36,7 @@ class Boundaries(object):
                 if self.district is None:
                     self.district = db.session.query(District).first()
             except Exception as e:
-                log.warn(e)
+                log.warning(e)
 
         ret_val = {}
         ret_val['ada'] = self.ada

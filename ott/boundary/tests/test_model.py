@@ -30,8 +30,8 @@ class BasicModelTests(object):
         db = database_load(gtfs_file, url=url)
         log.debug("DATABASE TMP FILE: {0}".format(db_file))
     except Exception as e:
-        log.warn(e)
-        log.warn("couldn't make the BasicModelTests object for some reason")
+        log.warning(e)
+        log.warning("couldn't make the BasicModelTests object for some reason")
 
     def get_first(self):
         try:
@@ -65,9 +65,7 @@ def test_boundaries():
     """
     run by main, will test boundary intersection in established Geo database, with existing populated boundary tables
     """
-    from ott.utils import db_utils
     from ott.utils import geo_utils
-    from ott.utils import num_utils
 
     point_in_both  = geo_utils.make_point(lat=45.51, lon=-122.68)
     point_district = geo_utils.make_point(lat=45.51, lon=-122.67)

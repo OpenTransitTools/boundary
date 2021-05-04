@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Sequence
-from sqlalchemy.orm.session import Session
 from sqlalchemy.types import Date, Integer, String
 from sqlalchemy.orm import deferred, relationship
 from geoalchemy2 import Geometry
